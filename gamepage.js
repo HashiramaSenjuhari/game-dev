@@ -1,5 +1,8 @@
+const shoot = document.getElementById('shoot')
+const score = document.getElementById('scoreElement')
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -11,29 +14,38 @@ class Player{
       y:0
     }
     this.rotation = 0
+    this.opacity = 1
     const image = new Image()
-    image.src = './img/spaceship-1.png'
+    const image2 = new Image()
+    const image3 = new Image()
+    image.src = './img/easy.png'
+    image2.src = './img/lintermediate.png'
+    image3.src = './img/advance.png'
     image.onload = () =>{
-      let scale = 0.15
-      this.image = image
+      let scale = 0.28
+      let playerCollection = [image,image2,image3]
+      let randomInterval = Math.floor(Math.random()*playerCollection.length)
+      this.image = playerCollection[randomInterval]
       this.width = image.width * scale
       this.height = image.height * scale
       this.position = {
         x:canvas.width/2 -this.width/2,
-        y:canvas.height - this.height
-      }
+        y:canvas.height - this.height - 40
+        }
+
     }
   }
   draw(){
     c.save()
+    c.globalAlpha = this.opacity 
     c.translate(
-      this.position.x + this.width/2 ,
+      this.position.x + this.width/2,
       this.position.y + this.height/2
     )
     c.rotate(this.rotation)
     c.translate(
-      -this.position.x - this.width/2 ,
-      -this.position.y - this.height/2
+      - this.position.x - this.width/2,
+      - this.position.y - this.height/2
     )
     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
     c.restore()
@@ -47,30 +59,97 @@ class Player{
   }
 }
 
+// class Player{
+//   constructor(){
+//     this.velocity = {
+//       x:0,
+//       y:0
+//     }
+//     const image = new Image()
+//     this.intermediate = new Image()
+//     this.advance = new Image()
+
+//     image.src = './img/easy.png'
+//     this.intermediate.src = './img/lintermediate.png'
+//     this.advance.src = 'img/advance.png'
+    
+//     this.width = 0
+//     this.height = 0
+
+//     this.position = {
+//       x:0,
+//       y:0
+//     }
+//   }
+//   updateImage(){
+//     if(this.image){
+//       let scale = 0.24
+//       if(scores > 10000){
+//         this.image = this.advance
+//       }
+//       else if(scores>5000){
+//         this.image = this.intermediate
+//       }
+//       this.width = image.width * scale
+//       this.height = image.height * scale
+  
+//       this.position = {
+//         x:canvas.width/2 - this.width/2,
+//         y:canvas.height - this.height - 40
+//       }
+//       this.velocity = {
+//         x:0,
+//         y:0
+//       }
+//     }
+//   }
+//   draw(){
+//     if(this.image){
+//       c.save()
+//       c.translate(
+//         this.position.x + this.width / 2,
+//         this.position.y + this.height / 2
+//       )
+//       c.rotate(this.rotation);
+//       c.translate(
+//         -this.position.x - this.width / 2,
+//         -this.position.y - this.height / 2
+//       )
+//       c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
+//       c.restore()
+//     }
+//   }
+//   updates(){
+//     if(this.image){
+//       this.updateImage()
+//       this.draw()
+//       this.position.x += this.velocity.x
+//       this.position.y += this.velocity.y
+//     }
+//   }
+// }
+
 class Projectile{
   constructor({position,velocity}){
-    this.position = position
+    this.position = position 
     this.velocity = velocity
-    // this.radius = 3
-    const image = new Image()
-    image.src = './img/projectile.png'
-    image.onload = () =>{
-      let scale = 0.04
-      this.image = image
-      this.width = image.width * scale
-      this.height = image.height * scale
-    } 
-  }
+    this.radius = 5
+    }
+  
   draw(){
-    c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
+      c.beginPath()
+      c.arc(this.position.x,this.position.y,this.radius,0,Math.PI*2)
+      c.fillStyle = '#fab22e'
+      c.fill()
+      c.closePath()
   }
   update(){
-    if(this.image)
-    this.draw()
-    this.position.x += this.velocity.x
-    this.position.y += this.velocity.y
+      this.draw()
+      this.position.x += this.velocity.x
+      this.position.y += this.velocity.y
   }
 }
+  
 
 class Invader{
   constructor({position}){
@@ -79,12 +158,24 @@ class Invader{
       y:0
     }
     const image = new Image()
-    image.src = './img/villanspaceship.png'
+    const image2 = new Image()
+    const image3 = new Image()
+    image.src = './img/space.png'
+    image2.src = './img/b.png'
+    image3.src = './img/c.png'
+
+
     image.onload = () =>{
-      let scale = 0.09
-      this.image = image
+      let scale = 0.07
+      let imag = [image,image2,image3]
+        const randomImage = Math.floor(Math.random()*imag.length)
+        this.image = imag[randomImage]
+      console.log(imag[randomImage])
+      this.image = imag[randomImage]
       this.width = image.width * scale
       this.height = image.height * scale
+      this.widthA = image2.width * 0.10
+      this.heightA = image2.height * 0.10
       this.position = {
         x:position.x,
         y:position.y
@@ -92,6 +183,7 @@ class Invader{
     }
   }
   draw(){
+    if(this.image)
     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
   }
   update({velocity}){
@@ -104,12 +196,12 @@ class Invader{
   shoot(invaderProjectile){
     invaderProjectile.push(new InvaderProjectile({
       position:{
-        x:this.position.x + this.width/2,
-        y:this.position.y + this.height
+        x:this.position.x+this.width/2,
+        y:this.position.y+this.height
       },
       velocity:{
         x:0,
-        y:3
+        y:10
       }
     }))
   }
@@ -125,16 +217,40 @@ class Grid{
       x:3,
       y:0
     }
-    this.invader = []
-    const rows = Math.floor(Math.random()*6+5)
-    const columns = Math.floor(Math.random()*3+2)
-    this.width = columns*50
-    for(let x=0;x<rows;x++){
-      for(let y=0;y<columns;y++){
-        this.invader.push(new Invader({
+    if(scores > 5000){
+      this.velocity = {
+        x:5,
+        y:0
+      }
+    }
+    else if(scores > 10000){
+      this.velocity = {
+        x:6,
+        y:0
+      }
+    }
+    else if(scores > 15000){
+      this.velocity = {
+        x:7,
+        y:0
+      }
+    }
+    else if(scores > 20000){
+      this.velocity = {
+        x:8,
+        y:0
+      }
+    }
+    this.invaders = []
+    const rows = Math.floor(Math.random()*10+5)
+    const columns = Math.floor(Math.random()*5+2)
+    this.width = columns * 35
+    for(let x = 0; x<rows; x++){
+      for(let y = 0; y<columns; y++){
+        this.invaders.push(new Invader({
           position:{
-            x:x*50,
-            y:y*40
+            x:x*40,
+            y:y*35
           }
         }))
       }
@@ -144,11 +260,11 @@ class Grid{
     this.position.x += this.velocity.x
     this.position.y += this.velocity.y
     this.velocity.y = 0
-    if(this.position.x + this.width >= canvas.width - 250 || this.position.x <= 0){
-      this.velocity.x = -this.velocity.x
+
+    if(this.position.x + this.width >= canvas.width || this.position.x <= 0){
+      this.velocity.x = - this.velocity.x
       this.velocity.y = 30
     }
-
   }
 }
 
@@ -156,230 +272,348 @@ class InvaderProjectile{
   constructor({position,velocity}){
     this.position = position
     this.velocity = velocity
-    const image = new Image()
-    image.src = './img/bullet.png'
-    image.onload = () =>{
-      let scale = 0.09
-      this.image = image
-      this.width = image.width * scale
-      this.height = image.height * scale
-    }
+    this.width = 10
+    this.height = 10
   }
   draw(){
-    if(this.image)
-    c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
+    c.fillStyle = '#A964F7'
+    c.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
   update(){
-    if(this.image){
-      this.draw()
-      this.position.x += this.velocity.x
-      this.position.y += this.velocity.y
-    }
+    this.draw()
+    this.position.x += this.velocity.x
+    this.position.y += this.velocity.y
   }
 }
 
-// class compomnent{
-//   constructor(position,velocity){
-//     this.position = position
+class Particle{
+  constructor({position,velocity,radius,color,fades}){
+    this.position = position 
+    this.velocity = velocity
+    this.radius = radius
+    this.color = color
+    this.opacity = 2
+    this.fades = fades
+    }
+  
+  draw(){
+    c.save()
+    c.globalAlpha = this.opacity
+    c.beginPath()
+    c.arc(this.position.x,this.position.y,this.radius,0,Math.PI*2)
+    c.fillStyle = this.color
+    c.fill()
+    c.closePath()
+    c.restore()
+  }
+  update(){
+      this.draw()
+      this.position.x += this.velocity.x
+      this.position.y += this.velocity.y
+
+      if(this.fades)
+      this.opacity -= 0.01
+  }
+}
+
+// class Particle{
+//   constructor({position,velocity}){
 //     this.velocity = velocity
+//     this.position = position
 //     const image = new Image()
-//     image.src = './img/villanBall'
+//     image.src = './img/explotion-explode.gif'
 //     image.onload = () =>{
 //       this.image = image
 //       this.width = image.width
 //       this.height = image.height
 //     }
 //   }
+//   draw(){
+//     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
+//   }
 //   update(){
-//     this.position.x += this.decreseInVelocity.x
-
+//     if(this.image){
+//       this.draw()
+//       this.position.x += this.velocity.x
+//       this.position.y += this.velocity.y
+//     }
 //   }
 // }
 
+
 const player = new Player()
-const projectile = []
-const  grids = []
+const projectiles = []
+const grids = []
+const invaderProjectiles = []
+const particles = []
+
+
 let frames = 0
-let randomIntervals = (Math.floor(Math.random()*500))+500
-const invaderProjectile = []
-
-
+let randomInterval = (Math.floor(Math.random()*400))+300
+console.log(randomInterval)
+let scores = 0
+// let lives = 3
 
 let keys = {
-  ArrowRight :{
+  ArrowRight:{
     pressed:false
   },
   ArrowLeft:{
     pressed:false
   },
   Space:{
-    pressed:false
-  },
-  ArrowUp:{
-    pressed:false
-  },
-  ArrowDown:{
-    pressed:false
+    pressed:true
   }
 }
 
+let game = {
+  over:false,
+  active:true
+}
+
+for(let i = 0;i<100;i++){
+  particles.push(new Particle({
+    position:{
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height
+    },
+    velocity:{
+      x:0,
+      y:0.2
+    },
+    radius: Math.random()*3,
+    color:'white'
+  }))
+}
+
+function createParticles({object,color,fades}){
+  for(let i = 0;i<10;i++){
+              particles.push(new Particle({
+                position:{
+                  x:object.position.x + object.width/2,
+                  y:object.position.y + object.height/2
+                },
+                velocity:{
+                  x:(Math.random()-0.5)*2,
+                  y:(Math.random()-0.5)*2
+                },
+                radius: Math.random()*3,
+                color: color || '#A964F7',
+                fades 
+              }))
+            }
+}
 
 function animate(){
+  if(!game.active) return
   requestAnimationFrame(animate)
   c.fillStyle = 'black'
   c.fillRect(0,0,canvas.width,canvas.height)
   player.update()
-  // bomb.update()
-  // villanInvader.update()
-  invaderProjectile.forEach((invaderProjectiles,index) => {
-    if(invaderProjectiles.position.y + invaderProjectiles.height >= canvas.height){
-      setTimeout(() => {
-        invaderProjectile.splice(index,1)
+  particles.forEach((particle,index) => {
+
+    if(particle.position.y - particle.radius >= canvas.height){
+      particle.position.x = Math.random()*canvas.width
+      particle.position.y = -particle.radius
+    }
+
+    if(particle.opacity <= 0){
+      particles.splice(index,1)
+    }
+    else{
+      particle.update()
+    }  
+  })
+  projectiles.forEach(projectile => {projectile.update()})
+  invaderProjectiles.forEach((invaderProjectile,index) => {
+
+    if(invaderProjectile.position.y + invaderProjectile.height >= canvas.height){
+      setTimeout(() =>{
+        invaderProjectiles.splice(index,1)
       },0)
     }else{
-      invaderProjectiles.update()
+      invaderProjectile.update()
     }
-    if(invaderProjectiles.position.y + invaderProjectiles.height >= player.position.y &&
-      invaderProjectiles.position.x + invaderProjectiles.width >= player.position.x &&
-      invaderProjectiles.position.x <= player.position.x + player.width
-      ){
-      console.log('you lose')
-    }
-  })
-  // console.log(invaderProjectile)
-  projectile.forEach(projectile => setInterval(projectile.update(),2000))
-
-  grids.forEach(grid => {
-    grid.update()
-
-  // spawing 
-// console.log(grid.invader.length)
-
-    grid.invader.forEach((invader,i) => {
-
-      if(frames % 100 === 0 && grid.invader.length > 0){
-        grid.invader[Math.floor(Math.random()*3 )].shoot(invaderProjectile)
-      }
-      // console.log(grid.invader.length)
-      invader.update({velocity:grid.velocity})
-      projectile.forEach((projectiles,j) => {
-        if(
-          projectiles.position.y + (projectiles.height + projectiles.width)/2 <= invader.position.y + invader.height && 
-          projectiles.position.x + (projectiles.height + projectiles.width)/2 >= invader.position.x &&
-          projectiles.position.x - (projectiles.height + projectiles.width)/2 <= invader.position.x + invader.width && 
-          projectiles.position.y + (projectiles.height + projectiles.width)/2 >= invader.position.y
-        ){
+    if(invaderProjectile.position.y + invaderProjectile.height >= player.position.y && 
+      invaderProjectile.position.x + invaderProjectile.width >= player.position.x &&
+      invaderProjectile.position.x <= player.position.x + player.width ){
+        // lives--
+        // console.log(lives)
+        // console.log('hits')
+        
+          console.log('hits')
+          player.opacity = 0
+          game.over = true
           setTimeout(() =>{
-            // const invaderFound = grid.invader.find(invader2 => invader2 === invader2)
-            // const projectileFound = projectiles.find(projectile2 => projectile2 === projectile)
-            // if( projectileFound){
-            grid.invader.splice(i,1)
-            projectile.splice(j,1)
+            invaderProjectiles.splice(index,1)
+          },0)
+          setTimeout(() =>{
+            game.active = false
+          },2000)
+          createParticles({
+          object:player,
+          color:'red',
+          fades:true
+        })
+        
 
-        },0)
+
+    }
+  }
+)
+  grids.forEach(grid =>{
+    grid.update()
+    if(frames % 100 === 0 && grid.invaders.length>0){
+      grid.invaders[Math.floor(Math.random()*10)].shoot(invaderProjectiles)
+    }
+    grid.invaders.forEach((invader,i) => {
+      invader.update({velocity:grid.velocity})
+
+      // projectile hit enemy
+      projectiles.forEach((projectile,j) => {
+        if(projectile.position.y + projectile.radius <= invader.position.y + invader.height &&
+          projectile.position.x + projectile.radius >= invader.position.x && 
+          projectile.position.x - projectile.radius <= invader.position.x + invader.width && 
+          projectile.position.y + projectile.radius >= invader.position.y){
+
+            // particles.push(new Particle({
+            //   position:{
+            //     x:invader.position.x + invader.width/2,
+            //     y:invader.position.y + invader.heighht/2
+            //   },
+            //   velocity:{
+            //     x:10,
+            //     y:10 
+            //   }
+            // }))
+            createParticles({
+              object:invader,
+              fades:true
+            })
+          setTimeout(() =>{
+            const invaderFound = grid.invaders.find(invader2 => invader2 === invader)
+            const projectileFound = projectiles.find(projectile2 => projectile2 === projectile)
+            if(invaderFound && projectileFound){
+              scores+=100
+              score.textContent = scores
+              grid.invaders.splice(i,1)
+              projectiles.splice(j,1)
+            }
+          },0)
         }
       })
     })
   })
 
-
-
-
   if(keys.ArrowRight.pressed && player.position.x + player.width <= canvas.width){
-    player.velocity.x = 10
-    player.rotation = 0.20
+    player.velocity.x = scores > 20000 ? 20 : scores > 15000 ? 15 : scores > 10000 ? 10 : 5
+    player.rotation = 0.15
+    // if(scores > 10000){
+    //   player.velocity.x = 10
+    // }
+    // else if(scores > 15000){
+    //   player.velocity.x = 15
+    // }
+    // else if(scores >20000){
+    //   player.velocity.x = 20
+    // }
   }
   else if(keys.ArrowLeft.pressed && player.position.x >= 0){
-    player.velocity.x = -10
-    player.rotation = -0.20
-  }
-  else if(keys.ArrowUp.pressed && player.position.y >= 650 && player.position.x + player.width <= canvas.width){
-    player.velocity.y = -5
-  }
-  else if(keys.ArrowDown.pressed && player.position.y + player.height<= canvas.height && player.position.x >= 0){
-    player.velocity.y = 5
+    player.velocity.x = scores > 20000 ? -20 : scores > 15000 ? -15 : scores > 10000 ? -10 : -5
+    player.rotation = -0.15
+    // if(scores >10000){
+    //   player.velocity.x = -10
+    // }
+    // else if(scores > 15000){
+    //   player.velocity.x = -15
+    // }
+    // else if(scores >20000){
+    //   player.velocity.x = -20
+    // }
   }
   else{
     player.velocity.x = 0
-    player.velocity.y = 0
     player.rotation = 0
   }
-
-  if(frames % randomIntervals === 0){
+  if(frames % randomInterval === 0){
     grids.push(new Grid())
     frames = 0
   }
-  frames++
-
+  frames ++
 }
-
 animate()
 
-addEventListener('keydown', ({key}) =>{
-  // console.log(key)
+addEventListener('keydown',({key}) =>{
+  if(game.over) return
+  console.log(key)
   switch(key){
     case 'ArrowRight':
-      // console.log('right')
- 
+      console.log('right')
       keys.ArrowRight.pressed = true
       break
     case 'ArrowLeft':
-      // console.log('left')
-
+      console.log('left')
       keys.ArrowLeft.pressed = true
       break
     case ' ':
-      // console.log('space')
-      // if(isBulletReloading){
-      projectile.push(new Projectile({
+      console.log('space')
+      keys.Space.pressed = true
+      projectiles.push(new Projectile({
         position:{
-          x:player.position.x + player.width/3.5,
-          y:player.position.y 
+          x:player.position.x + player.width/2,
+          y:player.position.y + player.height/10
         },
         velocity:{
           x:0,
           y:-10
         }
       }))
-
-      keys.Space.pressed = true
-      break
-    case 'ArrowUp':
-      keys.ArrowUp.pressed = true
-
-      // console.log('up')
-      break
-    case 'ArrowDown':
-      keys.ArrowDown.pressed = true
-      // console.log('down')
+      shoot.play()
       break
   }
 })
 
-addEventListener('keyup', ({key}) =>{
-  // console.log(key)
+addEventListener('keyup',({key}) =>{
+  console.log(key)
   switch(key){
     case 'ArrowRight':
-      // console.log('right')
-
+      console.log('right')
       keys.ArrowRight.pressed = false
       break
     case 'ArrowLeft':
-      // console.log('left')
-
+      console.log('left')
       keys.ArrowLeft.pressed = false
       break
     case ' ':
-      // console.log('space')
+      console.log('space')
       keys.Space.pressed = false
-      break
-    case 'ArrowUp':
-      keys.ArrowUp.pressed = false
-      // console.log('up')
-      break
-    case 'ArrowDown':
-      keys.ArrowDown.pressed = false
-      // console.log('down')
       break
   }
 })
+
+// function toggleAudio() {
+//   var audioElement = document.getElementById('player');
+//   var soundOn = document.getElementById('play');
+//   var soundOff = document.getElementById('pause');
+//   var mute = document.getElementById('pause-p')
+//   var unmute = document.getElementById('play-p')
+
+//   if (audioElement.paused) {
+//     audioElement.play();
+//     soundOn.style.display = 'inline';  // Show the "play" image
+//     soundOff.style.display = 'none';   // Hide the "pause" image
+//     unmute.style.display = 'none';
+//     mute.style.display = 'inline';
+//   } else {
+//     audioElement.pause();
+//     soundOn.style.display = 'none';    // Hide the "play" image
+//     soundOff.style.display = 'inline'; // Show the "pause" image
+//     mute.style.display = 'none';
+//     unmute.style.display = 'inline';
+//   }
+// }
+
+// // Auto-play the audio when the page loads (initiated by user interaction)
+// window.addEventListener('load', function () {
+//   toggleAudio();  // Start the audio playback
+// });

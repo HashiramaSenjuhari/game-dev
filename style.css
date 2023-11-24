@@ -17,7 +17,9 @@ body
 }
 .container
 {
-  background: #000;
+  background: url(./img/bg.jpg);
+  background-size: 45vw 100vh;
+  background-repeat: no-repeat;
   width: 40vw;
   height: 100vh;
 }
