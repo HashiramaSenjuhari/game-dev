@@ -1,0 +1,70 @@
+*,
+*::after,
+*::before
+{
+  margin: 0;
+  padding: 0;
+}
+
+body
+{
+  opacity: 0;
+  background: url(./img/background.jpg);
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: 'Rubik', sans-serif;
+  transition: 4s;
+}
+.wrapper
+{
+  width: 40vw;
+  height: 50vh;
+  background: #ffffffe8;
+  margin: 12pc auto;
+  text-align: center;
+}
+.wrapper > h1
+{
+  position: absolute;
+  margin: 5pc 10pc auto;
+  font-size: 3rem;
+  /* padding: auto; */
+}
+.wrapper > button 
+{
+  width: 12vw;
+  height: 6vh;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #f6dc69;
+  border: 1px solid black;
+  position: absolute;
+  margin: 14pc -5.5pc auto;
+  cursor: pointer;
+  transition: 1s;
+}
+.wrapper > button:hover
+{
+  border: 1px solid black;
+}
+.wrapper > img 
+{
+  position: absolute;
+  margin: -13.7pc 2pc auto;
+}
+#img-2
+{
+  width: 20pc;
+  position: absolute;
+  margin: -14pc -25pc auto;
+}
+.wrapper > p
+{
+  position: absolute;
+  top: 46%;
+  left: 47%;
+  font-size: larger;
+}

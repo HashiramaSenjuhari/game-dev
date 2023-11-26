@@ -1,26 +1,33 @@
+// Get HTML elements and set up canvas
 const shoot = document.getElementById('shoot')
 const score = document.getElementById('scoreElement')
 const canvas = document.querySelector('canvas')
+const body = document.querySelector('body')
 const c = canvas.getContext('2d')
-
-
+addEventListener('DOMContentLoaded',()=>{
+  body.style.opacity = 1
+})
 canvas.width = innerWidth
 canvas.height = innerHeight
 
+// Player class represents the player's spaceship
 class Player{
   constructor(){
+     // Initial player properties
     this.velocity = {
       x:0,
       y:0
     }
     this.rotation = 0
     this.opacity = 1
+    // Load player spaceship images
     const image = new Image()
     const image2 = new Image()
     const image3 = new Image()
     image.src = './img/easy.png'
     image2.src = './img/lintermediate.png'
     image3.src = './img/advance.png'
+        // Set up player spaceship when the image is loaded
     image.onload = () =>{
       let scale = 0.28
       let playerCollection = [image,image2,image3]
@@ -35,6 +42,7 @@ class Player{
 
     }
   }
+  // Draw the player spaceship on the canvas
   draw(){
     c.save()
     c.globalAlpha = this.opacity 
@@ -50,6 +58,7 @@ class Player{
     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
     c.restore()
   }
+  // Update the player's position and draw the spaceship
   update(){
     if(this.image){
       this.draw()
@@ -129,13 +138,14 @@ class Player{
 //   }
 // }
 
+// Projectile class represents the bullets fired by the player
 class Projectile{
   constructor({position,velocity}){
     this.position = position 
     this.velocity = velocity
     this.radius = 5
     }
-  
+  // Draw the projectile on the canvas
   draw(){
       c.beginPath()
       c.arc(this.position.x,this.position.y,this.radius,0,Math.PI*2)
@@ -143,6 +153,7 @@ class Projectile{
       c.fill()
       c.closePath()
   }
+   // Update the projectile's position and draw it
   update(){
       this.draw()
       this.position.x += this.velocity.x
@@ -150,7 +161,7 @@ class Projectile{
   }
 }
   
-
+// Invader class represents the enemy spaceships
 class Invader{
   constructor({position}){
     this.velocity = {
@@ -164,7 +175,7 @@ class Invader{
     image2.src = './img/b.png'
     image3.src = './img/c.png'
 
-
+ // Set up the invader spaceship when the image is loaded
     image.onload = () =>{
       let scale = 0.07
       let imag = [image,image2,image3]
@@ -182,10 +193,12 @@ class Invader{
       }
     }
   }
+    // Draw the invader spaceship on the canvas
   draw(){
     if(this.image)
     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
   }
+  // Update the invader's position and draw it
   update({velocity}){
     if(this.image){
       this.draw()
@@ -193,6 +206,7 @@ class Invader{
       this.position.y += velocity.y
     }
   }
+    // Method to make the invader shoot projectiles
   shoot(invaderProjectile){
     invaderProjectile.push(new InvaderProjectile({
       position:{
@@ -207,6 +221,7 @@ class Invader{
   }
 }
 
+// Grid class represents a group of invaders arranged in a grid
 class Grid{
   constructor(){
     this.position = {
@@ -217,6 +232,8 @@ class Grid{
       x:3,
       y:0
     }
+        // Adjust invader speed based on the player's score
+
     if(scores > 5000){
       this.velocity = {
         x:5,
@@ -244,23 +261,26 @@ class Grid{
     this.invaders = []
     const rows = Math.floor(Math.random()*10+5)
     const columns = Math.floor(Math.random()*5+2)
-    this.width = columns * 35
+    this.width = columns * 35 // refers to totatl grid width
+    // for creating random column and rows 
     for(let x = 0; x<rows; x++){
       for(let y = 0; y<columns; y++){
         this.invaders.push(new Invader({
           position:{
-            x:x*40,
+            x:x*40, // 40 refers to image width including space
             y:y*35
           }
         }))
       }
     }
   }
+  // Update the grid's position and handle bouncing off canvas edges
   update(){
     this.position.x += this.velocity.x
     this.position.y += this.velocity.y
     this.velocity.y = 0
 
+    //if the grid width touches the canvas width it will repel
     if(this.position.x + this.width >= canvas.width || this.position.x <= 0){
       this.velocity.x = - this.velocity.x
       this.velocity.y = 30
@@ -268,6 +288,7 @@ class Grid{
   }
 }
 
+// InvaderProjectile class represents the bullets fired by invaders
 class InvaderProjectile{
   constructor({position,velocity}){
     this.position = position
@@ -286,6 +307,7 @@ class InvaderProjectile{
   }
 }
 
+// Particle class represents particles for splashing effect
 class Particle{
   constructor({position,velocity,radius,color,fades}){
     this.position = position 
@@ -295,7 +317,7 @@ class Particle{
     this.opacity = 2
     this.fades = fades
     }
-  
+  // Draw the particle on the canvas
   draw(){
     c.save()
     c.globalAlpha = this.opacity
@@ -306,6 +328,7 @@ class Particle{
     c.closePath()
     c.restore()
   }
+   // Update the particle's position, draw it, and handle fading
   update(){
       this.draw()
       this.position.x += this.velocity.x
@@ -316,31 +339,7 @@ class Particle{
   }
 }
 
-// class Particle{
-//   constructor({position,velocity}){
-//     this.velocity = velocity
-//     this.position = position
-//     const image = new Image()
-//     image.src = './img/explotion-explode.gif'
-//     image.onload = () =>{
-//       this.image = image
-//       this.width = image.width
-//       this.height = image.height
-//     }
-//   }
-//   draw(){
-//     c.drawImage(this.image,this.position.x,this.position.y,this.width,this.height)
-//   }
-//   update(){
-//     if(this.image){
-//       this.draw()
-//       this.position.x += this.velocity.x
-//       this.position.y += this.velocity.y
-//     }
-//   }
-// }
-
-
+// Initialize game objects and variables
 const player = new Player()
 const projectiles = []
 const grids = []
@@ -349,11 +348,13 @@ const particles = []
 
 
 let frames = 0
-let randomInterval = (Math.floor(Math.random()*400))+300
+let randomInterval = (Math.floor(Math.random()*400))+400
 console.log(randomInterval)
 let scores = 0
+export {scores}
 // let lives = 3
 
+// Key states for player controls
 let keys = {
   ArrowRight:{
     pressed:false
@@ -366,11 +367,13 @@ let keys = {
   }
 }
 
+// Game state
 let game = {
   over:false,
   active:true
 }
 
+// Create particles for background visual effects
 for(let i = 0;i<100;i++){
   particles.push(new Particle({
     position:{
@@ -386,6 +389,8 @@ for(let i = 0;i<100;i++){
   }))
 }
 
+
+// Function to create particles around a given object
 function createParticles({object,color,fades}){
   for(let i = 0;i<10;i++){
               particles.push(new Particle({
@@ -404,12 +409,14 @@ function createParticles({object,color,fades}){
             }
 }
 
+// Main animation loop
 function animate(){
   if(!game.active) return
   requestAnimationFrame(animate)
   c.fillStyle = 'black'
   c.fillRect(0,0,canvas.width,canvas.height)
   player.update()
+  // cake.draw()
   particles.forEach((particle,index) => {
 
     if(particle.position.y - particle.radius >= canvas.height){
@@ -437,9 +444,6 @@ function animate(){
     if(invaderProjectile.position.y + invaderProjectile.height >= player.position.y && 
       invaderProjectile.position.x + invaderProjectile.width >= player.position.x &&
       invaderProjectile.position.x <= player.position.x + player.width ){
-        // lives--
-        // console.log(lives)
-        // console.log('hits')
         
           console.log('hits')
           player.opacity = 0
@@ -449,15 +453,13 @@ function animate(){
           },0)
           setTimeout(() =>{
             game.active = false
+            location.href = "./gameOver.html";
           },2000)
           createParticles({
           object:player,
-          color:'red',
+          color:'goldenrod',
           fades:true
         })
-        
-
-
     }
   }
 )
@@ -506,30 +508,30 @@ function animate(){
   })
 
   if(keys.ArrowRight.pressed && player.position.x + player.width <= canvas.width){
-    player.velocity.x = scores > 20000 ? 20 : scores > 15000 ? 15 : scores > 10000 ? 10 : 5
+    player.velocity.x = 5
     player.rotation = 0.15
-    // if(scores > 10000){
-    //   player.velocity.x = 10
-    // }
-    // else if(scores > 15000){
-    //   player.velocity.x = 15
-    // }
-    // else if(scores >20000){
-    //   player.velocity.x = 20
-    // }
+    if(scores > 10000){
+      player.velocity.x = 10
+    }
+    else if(scores > 15000){
+      player.velocity.x = 15
+    }
+    else if(scores >20000){
+      player.velocity.x = 20
+    }
   }
   else if(keys.ArrowLeft.pressed && player.position.x >= 0){
-    player.velocity.x = scores > 20000 ? -20 : scores > 15000 ? -15 : scores > 10000 ? -10 : -5
+    player.velocity.x = -5
     player.rotation = -0.15
-    // if(scores >10000){
-    //   player.velocity.x = -10
-    // }
-    // else if(scores > 15000){
-    //   player.velocity.x = -15
-    // }
-    // else if(scores >20000){
-    //   player.velocity.x = -20
-    // }
+    if(scores >10000){
+      player.velocity.x = -10
+    }
+    else if(scores > 15000){
+      player.velocity.x = -15
+    }
+    else if(scores >20000){
+      player.velocity.x = -20
+    }
   }
   else{
     player.velocity.x = 0
@@ -543,6 +545,7 @@ function animate(){
 }
 animate()
 
+// Event listeners for player controls
 addEventListener('keydown',({key}) =>{
   if(game.over) return
   console.log(key)
@@ -573,6 +576,7 @@ addEventListener('keydown',({key}) =>{
   }
 })
 
+// Event listener for key release
 addEventListener('keyup',({key}) =>{
   console.log(key)
   switch(key){
@@ -591,6 +595,8 @@ addEventListener('keyup',({key}) =>{
   }
 })
 
+
+
 // function toggleAudio() {
 //   var audioElement = document.getElementById('player');
 //   var soundOn = document.getElementById('play');
@@ -600,7 +606,8 @@ addEventListener('keyup',({key}) =>{
 
 //   if (audioElement.paused) {
 //     audioElement.play();
-//     soundOn.style.display = 'inline';  // Show the "play" image
+//     soundOn.style.display = 'inline'; 
+ // Show the "play" image
 //     soundOff.style.display = 'none';   // Hide the "pause" image
 //     unmute.style.display = 'none';
 //     mute.style.display = 'inline';

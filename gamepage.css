@@ -1,25 +1,13 @@
-/* *,
+*,
 *::after,
 *::before
 {
   margin: 0;
-} */
+}
 body
 {
   margin: 0;
   overflow: hidden;
-}
-#play,
-#pause {
-	float: left;
-	width: 40px;
-  margin-top: -1.4pc;
-  margin-left: 1pc;
-}
-#play:hover,
-#pause:hover {
-	cursor: pointer;
-}
-#pause {
-	display: none;
+  opacity: 0;
+  transition: 1s;
 }
