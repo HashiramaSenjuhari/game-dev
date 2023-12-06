@@ -29,7 +29,7 @@ class Player{
     image3.src = './img/advance.png'
         // Set up player spaceship when the image is loaded
     image.onload = () =>{
-      let scale = 0.28
+      let scale = 0.18
       let playerCollection = [image,image2,image3]
       let randomInterval = Math.floor(Math.random()*playerCollection.length)
       this.image = playerCollection[randomInterval]
@@ -476,7 +476,7 @@ function animate(){
         if(projectile.position.y + projectile.radius <= invader.position.y + invader.height &&
           projectile.position.x + projectile.radius >= invader.position.x && 
           projectile.position.x - projectile.radius <= invader.position.x + invader.width && 
-          projectile.position.y + projectile.radius >= invader.position.y){
+          projectile.position.y - projectile.radius >= invader.position.y){
 
             // particles.push(new Particle({
             //   position:{
